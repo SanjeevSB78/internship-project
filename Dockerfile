@@ -1,5 +1,9 @@
 FROM php:8.2-apache
 
+# Ensure only Apache's prefork MPM is enabled
+RUN a2dismod mpm_event mpm_worker mpm_shared 2>/dev/null || true \
+    && a2enmod mpm_prefork
+
 # System tools needed to build PHP extensions
 RUN apt-get update && apt-get install -y \
     libssl-dev \

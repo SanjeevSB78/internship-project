@@ -1,8 +1,7 @@
 FROM php:8.2-apache
 
-# Make sure Apache loads only prefork MPM
-RUN rm -f /etc/apache2/mods-enabled/mpm_*.load \
-          /etc/apache2/mods-enabled/mpm_*.conf \
+# Remove every enabled Apache MPM configuration
+RUN find /etc/apache2/mods-enabled -type f -name 'mpm_*' -delete \
     && a2enmod mpm_prefork
 
 # System tools needed to build PHP extensions

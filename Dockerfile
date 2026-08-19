@@ -4,6 +4,9 @@ RUN rm -f /etc/apache2/mods-enabled/mpm_*.load \
           /etc/apache2/mods-enabled/mpm_*.conf \
     && a2enmod mpm_prefork
 
+RUN echo "===== APACHE MPM CHECK =====" \
+    && apachectl -M 2>&1 | grep mpm
+
 # System tools needed to build PHP extensions
 RUN apt-get update && apt-get install -y \
     libssl-dev \

@@ -31,7 +31,11 @@ if (password_verify($password, $user["password"])) {
     $token = bin2hex(random_bytes(32));
 
     $redis = new Redis();
-    $redis->connect("127.0.0.1", 6379);
+
+    $redis->connect($redisHost, $redisPort);
+    if ($redisPassword) {
+        $redis->auth($redisPassword);
+    }
     $redis->setEx($token, 3600, $user["id"]);
 
     echo json_encode([

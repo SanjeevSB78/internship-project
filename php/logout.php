@@ -16,7 +16,10 @@ if (strpos($authHeader, "Bearer ") !== 0) {
 $token = substr($authHeader, 7);
 
 $redis = new Redis();
-$redis->connect("127.0.0.1", 6379);
+$redis->connect($redisHost, $redisPort);
+if ($redisPassword) {
+    $redis->auth($redisPassword);
+}
 
 
 $deleted = $redis->del($token);

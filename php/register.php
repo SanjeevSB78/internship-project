@@ -51,9 +51,7 @@ if ($stmt->execute()) {
     $userId = $conn->insert_id;
 
     // Connect to MongoDB
-    $mongo = new MongoDB\Driver\Manager(
-        "mongodb://127.0.0.1:27017"
-    );
+    $mongo = new MongoDB\Driver\Manager($mongoUri);
 
     // Create an empty profile linked to the MySQL user
     $profile = [

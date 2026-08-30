@@ -1,6 +1,7 @@
 <?php
-
 header("Content-Type: application/json");
+
+require_once "config.php";
 
 $headers = getallheaders();
 $authHeader = $headers["Authorization"] ?? "";
@@ -21,19 +22,10 @@ if ($redisPassword) {
     $redis->auth($redisPassword);
 }
 
-
 $deleted = $redis->del($token);
 
-if ($deleted) {
-    echo json_encode([
-        "success" => true,
-        "message" => "Logged out successfully"
-    ]);
-} else {
-    echo json_encode([
-        "success" => false,
-        "message" => "Token not found"
-    ]);
-}
-
+echo json_encode($deleted
+    ? ["success" => true, "message" => "Logged out successfully"]
+    : ["success" => false, "message" => "Token not found"]
+);
 ?>

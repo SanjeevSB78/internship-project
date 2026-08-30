@@ -2,6 +2,8 @@
 
 header("Content-Type: application/json");
 
+require_once __DIR__ . "/config.php";
+
 $headers = getallheaders();
 $authHeader = $headers["Authorization"] ?? "";
 
@@ -16,7 +18,10 @@ if (strpos($authHeader, "Bearer ") !== 0) {
 $token = substr($authHeader, 7);
 
 $redis = new Redis();
-$redis->connect("127.0.0.1", 6379);
+$redis->connect($redisHost, $redisPort);
+if ($redisPassword) {
+    $redis->auth($redisPassword);
+}
 
 $userId = $redis->get($token);
 
@@ -28,9 +33,7 @@ if ($userId === false) {
     exit;
 }
 
-$mongo = new MongoDB\Driver\Manager(
-    "mongodb://127.0.0.1:27017"
-);
+$mongo = new MongoDB\Driver\Manager($mongoUri);
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 

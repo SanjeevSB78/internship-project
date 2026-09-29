@@ -1,3 +1,4 @@
+<?php
 $host     = getenv("MYSQL_HOST") ?: getenv("MYSQLHOST") ?: "127.0.0.1";
 $username = getenv("MYSQL_USER") ?: getenv("MYSQLUSER") ?: "root";
 $password = getenv("MYSQL_PASSWORD") ?: getenv("MYSQLPASSWORD") ?: "";
@@ -34,3 +35,4 @@ if (!$conn->real_connect(
 )) {
     die("Connection Failed: " . $conn->connect_error);
 }
+?>

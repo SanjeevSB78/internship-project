@@ -1,4 +1,12 @@
 <?php
+$mongoUri = getenv("MONGODB_URI");
+
+if ($mongoUri === false || trim($mongoUri) === "") {
+    error_log("MONGODB_URI is not configured.");
+    http_response_code(500);
+    exit("Database configuration error.");
+}
+
 $host     = getenv("MYSQL_HOST") ?: getenv("MYSQLHOST") ?: "127.0.0.1";
 $username = getenv("MYSQL_USER") ?: getenv("MYSQLUSER") ?: "root";
 $password = getenv("MYSQL_PASSWORD") ?: getenv("MYSQLPASSWORD") ?: "";
@@ -35,4 +43,3 @@ if (!$conn->real_connect(
 )) {
     die("Connection Failed: " . $conn->connect_error);
 }
-?>

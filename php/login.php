@@ -16,9 +16,14 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 $username = $_POST["username"] ?? "";
-$password = $_POST["password"] ?? "";
+$loginPassword = $_POST["password"] ?? "";
 
-if (!is_string($username) || !is_string($password) || $username === "" || $password === "") {
+if (
+    !is_string($username) ||
+    !is_string($loginPassword) ||
+    $username === "" ||
+    $loginPassword === ""
+) {
     respond(400, [
         "success" => false,
         "message" => "Username and password are required."
@@ -35,7 +40,7 @@ try {
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-    if (!$user || !password_verify($password, $user["password"])) {
+    if (!$user || !password_verify($loginPassword, $user["password"])) {
         $stmt->close();
         $conn->close();
 

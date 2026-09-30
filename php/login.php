@@ -40,15 +40,23 @@ try {
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-    if (!$user || !password_verify($loginPassword, $user["password"])) {
-        $stmt->close();
-        $conn->close();
+    if (!$user) {
+            error_log("Login diagnostic: no matching user row.");
+        } elseif (!password_verify($loginPassword, $user["password"])) {
+            error_log("Login diagnostic: password verification failed.");
+        } else {
+            // Continue with the Redis token creation below.
+        }
 
-        respond(401, [
-            "success" => false,
-            "message" => "Invalid Username or Password"
-        ]);
-    }
+        if (!$user || !password_verify($loginPassword, $user["password"])) {
+            $stmt->close();
+            $conn->close();
+
+            respond(401, [
+                "success" => false,
+                "message" => "Invalid Username or Password"
+            ]);
+        }
 
     $redisHost = getenv("REDIS_HOST");
     $redisPortValue = getenv("REDIS_PORT");

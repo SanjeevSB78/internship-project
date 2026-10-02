@@ -15,13 +15,13 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     ]);
 }
 
-$username = $_POST["username"] ?? "";
+$loginUsername = $_POST["username"] ?? "";
 $loginPassword = $_POST["password"] ?? "";
 
 if (
-    !is_string($username) ||
+    !is_string($loginUsername) ||
     !is_string($loginPassword) ||
-    $username === "" ||
+    $loginUsername === "" ||
     $loginPassword === ""
 ) {
     respond(400, [
@@ -34,29 +34,21 @@ try {
     require_once __DIR__ . "/config.php";
 
     $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("s", $loginUsername);
     $stmt->execute();
 
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-    if (!$user) {
-            error_log("Login diagnostic: no matching user row.");
-        } elseif (!password_verify($loginPassword, $user["password"])) {
-            error_log("Login diagnostic: password verification failed.");
-        } else {
-            // Continue with the Redis token creation below.
-        }
+    if (!$user || !password_verify($loginPassword, $user["password"])) {
+        $stmt->close();
+        $conn->close();
 
-        if (!$user || !password_verify($loginPassword, $user["password"])) {
-            $stmt->close();
-            $conn->close();
-
-            respond(401, [
-                "success" => false,
-                "message" => "Invalid Username or Password"
-            ]);
-        }
+        respond(401, [
+            "success" => false,
+            "message" => "Invalid Username or Password"
+        ]);
+    }
 
     $redisHost = getenv("REDIS_HOST");
     $redisPortValue = getenv("REDIS_PORT");

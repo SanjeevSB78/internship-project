@@ -26,13 +26,29 @@ $token = substr($authHeader, 7);
 
 try {
     $redis = new Redis();
-    $redis->connect($redisHost, $redisPort);
+    $redisHost = getenv("REDIS_HOST");
+    $redisPortValue = getenv("REDIS_PORT");
+    $redisPort = ($redisPortValue !== false && $redisPortValue !== "")
+        ? (int) $redisPortValue
+        : 6379;
+    $redisPassword = getenv("REDIS_PASSWORD");
+
+    if (!$redisHost) {
+        error_log("REDIS_HOST is not configured.");
+        echo json_encode([
+            "success" => false,
+            "message" => "Session service is not configured."
+        ]);
+        exit;
+    }
+    $redis->connect($redisHost, $redisPort, 5);
 
     if ($redisPassword) {
         $redis->auth($redisPassword);
     }
 
     $userId = $redis->get($token);
+    $redis->close();
 } catch (Throwable $error) {
     respond(500, [
         "success" => false,

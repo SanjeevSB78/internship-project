@@ -184,5 +184,6 @@ The live version runs on free cloud tiers:
 
 ## Author
 
-SANJEEV
+**Sanjeev SB**
+[LinkedIn](https://www.linkedin.com/in/sanjeev-sb-b49b4831a) · [GitHub](https://github.com/SanjeevSB78)
 

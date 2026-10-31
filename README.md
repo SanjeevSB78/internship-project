@@ -184,5 +184,5 @@ The live version runs on free cloud tiers:
 
 ## Author
 
-**Your Name**
-[LinkedIn](https://linkedin.com/in/your-profile) · [GitHub](https://github.com/your-username)
+SANJEEV
+
